@@ -24,9 +24,15 @@
     <ClCompile Include="LoadShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="genSipenski.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoadShader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="genSipenski.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

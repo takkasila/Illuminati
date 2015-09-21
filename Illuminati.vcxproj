@@ -79,10 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="genSipenski.cpp" />
     <ClCompile Include="LoadShader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="genSipenski.h" />
     <ClInclude Include="LoadShader.h" />
   </ItemGroup>
   <ItemGroup>

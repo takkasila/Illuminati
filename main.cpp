@@ -5,7 +5,8 @@
 #include "Libraries\GLFW\glfw3.h"
 #include "Libraries\glm\glm\glm.hpp"
 
-#include "LoadShader.h";
+#include "LoadShader.h"
+#include "genSipenski.h"
 
 using namespace glm;
 using namespace std;
@@ -52,16 +53,20 @@ int main()
 #pragma endregion
 
 	GLuint programID = LoadShaders("vShader.glsl", "fShader.glsl");
-
+	
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	static const GLfloat v_data [] = {
+
+	/*GLfloat v_data [] = {
 		-1, -1, 0
 		, 1, -1, 0
 		, 0, 1, 0
 	};
+*/
+	GLfloat v_data[177147];	// max 11 step, 3^11
+	sipenski(v_data, 5);
 
 	GLuint v_buffer;
 	glGenBuffers(1, &v_buffer);
