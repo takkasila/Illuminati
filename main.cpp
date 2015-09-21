@@ -12,8 +12,8 @@ using namespace glm;
 using namespace std;
 
 GLFWwindow* window;
-float window_width = 600;
-float window_height = 600;
+float window_width = 1024;
+float window_height = 768;
 int main()
 {
 #pragma region Init
@@ -57,21 +57,18 @@ int main()
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
+	
+	int depth = 8;
+	int numVertex = 3 * (int) pow(3, depth);
+	int numVertexAllocate = 3 * numVertex;
 
-
-	/*GLfloat v_data [] = {
-		-1, -1, 0
-		, 1, -1, 0
-		, 0, 1, 0
-	};
-*/
-	GLfloat v_data[177147];	// max 11 step, 3^11
-	sipenski(v_data, 5);
+	GLfloat* v_data = new GLfloat[numVertexAllocate];
+	sipenski(v_data, depth);
 
 	GLuint v_buffer;
 	glGenBuffers(1, &v_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, v_buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(v_data), v_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertexAllocate, v_data, GL_STATIC_DRAW);
 
 
 	do{
@@ -89,7 +86,7 @@ int main()
 			, (void*) 0
 		);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, numVertex);
 		glDisableVertexAttribArray(0);
 
 		glfwSwapBuffers(window);

@@ -7,23 +7,55 @@
 #include "genSipenski.h"
 
 using namespace glm;
-
-void triangle(vec3 a, vec3 b, vec3 c)
+int i = 0;
+void point(GLfloat* v_data, vec3 a)
 {
+	v_data[i++] = a.x;
+	v_data[i++] = a.y;
+	v_data[i++] = a.z;
 
 }
 
-void sipenski(GLfloat* v_data, const int depth)
+void triangle(GLfloat* v_data, vec3 a, vec3 b, vec3 c)
 {
-	v_data[0] = -1;
-	v_data[1] = -1;
-	v_data[2] = 0;
+	point(v_data, a);
+	point(v_data, b);
+	point(v_data, c);
 
-	v_data[3] = 1;
-	v_data[4] = -1;
-	v_data[5] = 0;
+}
 
-	v_data[6] = 0;
-	v_data[7] = 1;
-	v_data[8] = 0;
+void divide_triangle(GLfloat* v_data, int depth, vec3 a, vec3 b, vec3 c)
+{
+	if (depth > 0)
+	{
+		vec3 v0, v1, v2;
+		v0 = (a + b) / 2.0f;
+		v1 = (b + c) / 2.0f;
+		v2 = (a + c) / 2.0f;
+
+		divide_triangle(v_data, depth - 1, a, v0, v2);
+		divide_triangle(v_data, depth - 1, v0, b, v1);
+		divide_triangle(v_data, depth - 1, v2, v1, c);
+	}
+	else
+	{
+		triangle(v_data, a, b, c);
+	}
+	
+
+
+}
+
+void sipenski(GLfloat* v_data, int depth)
+{
+	i = 0;
+	
+	vec3 a = { -1, -1, 0 };
+	vec3 b = { 1, -1, 0 };
+	vec3 c = { 0, 1, 0 };
+
+	divide_triangle(v_data, depth, a, b, c);
+	
+	int k = 5;
+	return;
 }
