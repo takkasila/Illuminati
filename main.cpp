@@ -4,6 +4,7 @@
 #include "Libraries\GLEW\glew.h"
 #include "Libraries\GLFW\glfw3.h"
 #include "Libraries\glm\glm\glm.hpp"
+#include "Libraries\FreeImage\FreeImage.h"
 
 #include "LoadShader.h"
 #include "genSipenski.h"
@@ -44,7 +45,10 @@ int main()
 	}
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetCursorPos(window, window_width / 2.0, window_height / 2.0);
-	glClearColor(0.95, 0.95, 0.95, 0);
+	glClearColor(230 / 255.0
+		, 74 / 255.0
+		, 25 / 255.0
+		, 0);
 
 	//Z-Buffer
 	glEnable(GL_DEPTH_TEST);
@@ -70,7 +74,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, v_buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertexAllocate, v_data, GL_STATIC_DRAW);
 
-
+	bool save = true;
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
@@ -88,6 +92,25 @@ int main()
 
 		glDrawArrays(GL_TRIANGLES, 0, numVertex);
 		glDisableVertexAttribArray(0);
+
+		if (save)
+		{
+			save = false;
+			BYTE* pixels = new GLubyte[4*3 * window_width*window_height];
+
+			glReadPixels(0, 0, window_width, window_height
+				, GL_RGB
+				, GL_UNSIGNED_BYTE
+				, pixels);
+			FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, window_width, window_height
+				, 3 * window_width, 24
+				, 0x000000, 0x000000, 0x000000
+				, false);
+			FreeImage_Save(FIF_BMP, image, "D:/xoxo2.bmp", 0);
+
+			FreeImage_Unload(image);
+			delete [] pixels;
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

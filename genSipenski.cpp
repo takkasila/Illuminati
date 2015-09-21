@@ -26,6 +26,9 @@ void triangle(GLfloat* v_data, vec3 a, vec3 b, vec3 c)
 
 void divide_triangle(GLfloat* v_data, int depth, vec3 a, vec3 b, vec3 c)
 {
+
+	
+
 	if (depth > 0)
 	{
 		vec3 v0, v1, v2;
@@ -33,17 +36,13 @@ void divide_triangle(GLfloat* v_data, int depth, vec3 a, vec3 b, vec3 c)
 		v1 = (b + c) / 2.0f;
 		v2 = (a + c) / 2.0f;
 
+		triangle(v_data, v0, v1, v2);
+
 		divide_triangle(v_data, depth - 1, a, v0, v2);
 		divide_triangle(v_data, depth - 1, v0, b, v1);
 		divide_triangle(v_data, depth - 1, v2, v1, c);
 	}
-	else
-	{
-		triangle(v_data, a, b, c);
-	}
 	
-
-
 }
 
 void sipenski(GLfloat* v_data, int depth)
