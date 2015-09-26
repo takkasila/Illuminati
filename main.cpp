@@ -13,8 +13,8 @@ using namespace glm;
 using namespace std;
 
 GLFWwindow* window;
-float window_width = 1024;
-float window_height = 768;
+float window_width = 1200;
+float window_height = 900;
 int main()
 {
 #pragma region Init
@@ -23,9 +23,9 @@ int main()
 		fprintf(stderr, "Failed to init glfw\n");
 		return -1;
 	}
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_SAMPLES, 16);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	
 	window = glfwCreateWindow(window_width, window_height, "Illuminati", NULL, NULL);
 	
@@ -56,15 +56,19 @@ int main()
 	glEnable(GL_CULL_FACE);
 #pragma endregion
 
+	GLuint frameBuffer;
+	glGenFramebuffers(1, &frameBuffer);
+	glBindBuffer(GL_FRAMEBUFFER, frameBuffer);
+
 	GLuint programID = LoadShaders("vShader.glsl", "fShader.glsl");
 	
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 	
-	int depth = 8;
-	int numVertex = 3 * (int) pow(3, depth);
-	int numVertexAllocate = 3 * numVertex;
+	int depth = 10;
+	int numVertex = 3 * (int) pow(3, depth);	// Total verticies
+	int numVertexAllocate = 3 * numVertex;		// x, y, z per verticies
 
 	GLfloat* v_data = new GLfloat[numVertexAllocate];
 	sipenski(v_data, depth);
@@ -96,17 +100,17 @@ int main()
 		if (save)
 		{
 			save = false;
-			BYTE* pixels = new GLubyte[4*3 * window_width*window_height];
-
+			BYTE* pixels = new GLubyte[3 * window_width*window_height];
+			
 			glReadPixels(0, 0, window_width, window_height
 				, GL_RGB
 				, GL_UNSIGNED_BYTE
 				, pixels);
 			FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, window_width, window_height
 				, 3 * window_width, 24
-				, 0x000000, 0x000000, 0x000000
+				, 0xFF0000, 0xFF0000, 0xFF0000
 				, false);
-			FreeImage_Save(FIF_BMP, image, "D:/xoxo2.bmp", 0);
+			FreeImage_Save(FIF_BMP, image, "../Sipenski.bmp", 0);
 
 			FreeImage_Unload(image);
 			delete [] pixels;
