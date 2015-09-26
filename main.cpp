@@ -71,12 +71,16 @@ int main()
 	GLuint ViewMatrixID = glGetUniformLocation(programID, "View");
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "Model");
 
-	int depth = 11;
-	int numVertex = 3 * (int) pow(3, depth);	// Total verticies
-	int numVertexAllocate = 3 * numVertex;		// x, y, z per verticies
+
+	int depth = 10;
+	//int numVertex = 3 * (int) pow(3, depth);	// 2D
+	int numVertex =  3 * 4 * (int) pow(4, depth);	// 3D
+
+	int numVertexAllocate = 3 * numVertex;
 
 	GLfloat* v_data = new GLfloat[numVertexAllocate];
-	sipenski(v_data, depth, 10, 10);
+	//sipenski(v_data, depth, 10, 10);
+	sipenski3D(v_data, depth, 5);
 
 	GLuint v_buffer;
 	glGenBuffers(1, &v_buffer);
