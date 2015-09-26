@@ -56,7 +56,7 @@ int main()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 #pragma endregion
-
+	
 	GLuint frameBuffer;
 	glGenFramebuffers(1, &frameBuffer);
 	glBindBuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -70,9 +70,10 @@ int main()
 	GLuint MVPID = glGetUniformLocation(programID, "MVP");
 	GLuint ViewMatrixID = glGetUniformLocation(programID, "View");
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "Model");
+	GLuint renderModeID = glGetUniformLocation(programID, "renderMode");
 
 
-	int depth = 10;
+	int depth = 8;
 	//int numVertex = 3 * (int) pow(3, depth);	// 2D
 	int numVertex =  3 * 4 * (int) pow(4, depth);	// 3D
 
@@ -80,7 +81,7 @@ int main()
 
 	GLfloat* v_data = new GLfloat[numVertexAllocate];
 	//sipenski(v_data, depth, 10, 10);
-	sipenski3D(v_data, depth, 5);
+	sipenski3D(v_data, depth, 10);
 
 	GLuint v_buffer;
 	glGenBuffers(1, &v_buffer);
@@ -90,13 +91,13 @@ int main()
 	bool save = true;
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(programID);
-
 		computeMatricesFromInputs();
 		mat4 projection = getProjectionMatrix();
 		mat4 view = getViewMatrix();
 		mat4 model = mat4(1.0f);
 		mat4 MVP = projection  * view * model;
+
+		glUseProgram(programID);
 
 		glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 
@@ -111,7 +112,14 @@ int main()
 			, (void*) 0
 		);
 
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glUniform1i(renderModeID, 0);	// 0 = fill
 		glDrawArrays(GL_TRIANGLES, 0, numVertex);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glUniform1i(renderModeID, 1);	// 1 = line
+		glDrawArrays(GL_TRIANGLES, 0, numVertex);
+
 		glDisableVertexAttribArray(0);
 
 		if (save)
