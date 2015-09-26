@@ -8,6 +8,7 @@
 
 #include "LoadShader.h"
 #include "genSipenski.h"
+#include "controls.h"
 
 using namespace glm;
 using namespace std;
@@ -66,12 +67,16 @@ int main()
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 	
-	int depth = 10;
+	GLuint MVPID = glGetUniformLocation(programID, "MVP");
+	GLuint ViewMatrixID = glGetUniformLocation(programID, "View");
+	GLuint ModelMatrixID = glGetUniformLocation(programID, "Model");
+
+	int depth = 11;
 	int numVertex = 3 * (int) pow(3, depth);	// Total verticies
 	int numVertexAllocate = 3 * numVertex;		// x, y, z per verticies
 
 	GLfloat* v_data = new GLfloat[numVertexAllocate];
-	sipenski(v_data, depth);
+	sipenski(v_data, depth, 10, 10);
 
 	GLuint v_buffer;
 	glGenBuffers(1, &v_buffer);
@@ -82,6 +87,14 @@ int main()
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
+
+		computeMatricesFromInputs();
+		mat4 projection = getProjectionMatrix();
+		mat4 view = getViewMatrix();
+		mat4 model = mat4(1.0f);
+		mat4 MVP = projection  * view * model;
+
+		glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, v_buffer);
@@ -118,8 +131,16 @@ int main()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS
 		&& glfwWindowShouldClose(window) == 0);
+
+
+	glDeleteBuffers(1, &v_buffer);
+	glDeleteProgram(programID);
+	glDeleteVertexArrays(1, &VertexArrayID);
+
+	glfwTerminate();
 
 	return 0;
 }
