@@ -16,6 +16,25 @@ using namespace std;
 GLFWwindow* window;
 float window_width = 1200;
 float window_height = 900;
+
+void takeScreenShot()
+{
+	BYTE* pixels = new GLubyte[3 * window_width*window_height];
+
+	glReadPixels(0, 0, window_width, window_height
+		, GL_RGB
+		, GL_UNSIGNED_BYTE
+		, pixels);
+	FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, window_width, window_height
+		, 3 * window_width, 24
+		, 0xFF0000, 0xFF0000, 0xFF0000
+		, false);
+	FreeImage_Save(FIF_BMP, image, "../Sipenski.bmp", 0);
+
+	FreeImage_Unload(image);
+	delete[] pixels;
+}
+
 int main()
 {
 #pragma region Init
@@ -73,7 +92,7 @@ int main()
 	GLuint renderModeID = glGetUniformLocation(programID, "renderMode");
 
 
-	int depth = 8;
+	int depth = 10;
 	//int numVertex = 3 * (int) pow(3, depth);	// 2D
 	int numVertex =  3 * 4 * (int) pow(4, depth);	// 3D
 
@@ -122,23 +141,11 @@ int main()
 
 		glDisableVertexAttribArray(0);
 
+
 		if (save)
 		{
 			save = false;
-			BYTE* pixels = new GLubyte[3 * window_width*window_height];
-			
-			glReadPixels(0, 0, window_width, window_height
-				, GL_RGB
-				, GL_UNSIGNED_BYTE
-				, pixels);
-			FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, window_width, window_height
-				, 3 * window_width, 24
-				, 0xFF0000, 0xFF0000, 0xFF0000
-				, false);
-			FreeImage_Save(FIF_BMP, image, "../Sipenski.bmp", 0);
-
-			FreeImage_Unload(image);
-			delete [] pixels;
+			takeScreenShot();
 		}
 
 		glfwSwapBuffers(window);
