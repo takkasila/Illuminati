@@ -30,12 +30,12 @@ GLuint loadBMP_custom(const char* imagepath)
 	if (fread(header, 1, 54, file) != 54)
 	{
 		// If not 54 btes read : problem
-		printf("Not a correct BMP file\n");
+		printf("Not a correct BMP file1\n");
 		return 0;
 	}
 	if (header[0] != 'B' || header[1] != 'M')
 	{
-		printf("Not a correct BMP file\n");
+		printf("Not a correct BMP file2\n");
 	}
 	// Make sure this is a 24bpp file
 	if (*(int*) &(header[0x1E]) != 0)         { printf("Not a correct BMP file\n");    return 0; }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "Libraries\GLEW\glew.h"
 #include "Libraries\GLFW\glfw3.h"
@@ -9,6 +10,7 @@
 #include "LoadShader.h"
 #include "genSipenski.h"
 #include "controls.h"
+#include "texture.h"
 
 using namespace glm;
 using namespace std;
@@ -91,8 +93,7 @@ int main()
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "Model");
 	GLuint renderModeID = glGetUniformLocation(programID, "renderMode");
 
-
-	int depth = 10;
+	int depth = 2;
 	//int numVertex = 3 * (int) pow(3, depth);	// 2D
 	int numVertex =  3 * 4 * (int) pow(4, depth);	// 3D
 
@@ -106,6 +107,29 @@ int main()
 	glGenBuffers(1, &v_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, v_buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertexAllocate, v_data, GL_STATIC_DRAW);
+	
+	// texture
+	GLuint texture = loadBMP_custom("Resources/Illuminati.bmp");
+	GLuint TextureID = glGetUniformLocation(programID, "textureSampler");
+	GLfloat* uv_data = new GLfloat[numVertex * 2];
+	
+	for (int f1 = 0; f1 < numVertex * 2; f1+= 6)
+	{
+		uv_data[f1] = 991/1000.0f;
+		uv_data[f1 + 1] = 6 / 1000.0f;
+
+		uv_data[f1 + 2] = 573 / 1000.0f;
+		uv_data[f1 + 3] = 995 / 1000.0f;
+
+		uv_data[f1 + 4] = 24 / 1000.0f;
+		uv_data[f1 + 5] = 6 / 1000.0f;
+	}
+	
+	GLuint uvBuffer;
+	glGenBuffers(1, &uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertex * 2, uv_data, GL_STATIC_DRAW);
+
 
 	bool save = true;
 	do{
@@ -120,6 +144,11 @@ int main()
 
 		glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 
+		// Texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glUniform1i(TextureID, 0);
+
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, v_buffer);
 		glVertexAttribPointer(
@@ -130,6 +159,18 @@ int main()
 			, 0
 			, (void*) 0
 		);
+
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+		glVertexAttribPointer(
+			1
+			, 2
+			, GL_FLOAT
+			, GL_FALSE
+			, 0
+			, (void*) 0
+		);
+
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glUniform1i(renderModeID, 0);	// 0 = fill
@@ -158,6 +199,7 @@ int main()
 	glDeleteBuffers(1, &v_buffer);
 	glDeleteProgram(programID);
 	glDeleteVertexArrays(1, &VertexArrayID);
+	glDeleteTextures(1, &texture);
 
 	glfwTerminate();
 
