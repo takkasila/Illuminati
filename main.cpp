@@ -19,6 +19,10 @@ GLFWwindow* window;
 float window_width = 1200;
 float window_height = 900;
 
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+
 void takeScreenShot()
 {
 	BYTE* pixels = new GLubyte[3 * window_width*window_height];
@@ -93,7 +97,7 @@ int main()
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "Model");
 	GLuint renderModeID = glGetUniformLocation(programID, "renderMode");
 
-	int depth = 2;
+	int depth = 10;
 	//int numVertex = 3 * (int) pow(3, depth);	// 2D
 	int numVertex =  3 * 4 * (int) pow(4, depth);	// 3D
 
