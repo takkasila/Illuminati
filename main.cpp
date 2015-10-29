@@ -11,6 +11,7 @@
 #include "genSipenski.h"
 #include "controls.h"
 #include "texture.h"
+#include "vboindexer.h"
 
 using namespace glm;
 using namespace std;
