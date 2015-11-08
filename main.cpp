@@ -76,16 +76,11 @@ int main()
 		, 74 / 255.0
 		, 25 / 255.0
 		, 0);
-
 	//Z-Buffer
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 #pragma endregion
-	
-	GLuint frameBuffer;
-	glGenFramebuffers(1, &frameBuffer);
-	glBindBuffer(GL_FRAMEBUFFER, frameBuffer);
 
 	GLuint programID = LoadShaders("vShader.glsl", "fShader.glsl");
 	
@@ -136,6 +131,15 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertex * 2, uv_data, GL_STATIC_DRAW);
 
 
+	vector<unsigned int> indices;
+
+	//indexVBO(v_buffer, );
+
+	GLuint elementbuffer;
+	glGenBuffers(1, &elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
 	bool save = true;
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -180,10 +184,21 @@ int main()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glUniform1i(renderModeID, 0);	// 0 = fill
 		glDrawArrays(GL_TRIANGLES, 0, numVertex);
+		
+		/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glUniform1i(renderModeID, 1);	// 1 = line
-		glDrawArrays(GL_TRIANGLES, 0, numVertex);
+		glDrawElements(
+			GL_TRIANGLES
+			, indices.size()
+			, GL_UNSIGNED_INT
+			, (void*) 0
+			);*/
+
+
+		// Draw outline
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glUniform1i(renderModeID, 1);	// 1 = line
+		//glDrawArrays(GL_TRIANGLES, 0, numVertex);
 
 		glDisableVertexAttribArray(0);
 
